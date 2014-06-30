@@ -102,3 +102,21 @@ plate.letters = rep(LETTERS[1:8], each = 12)
 plate.letters
 plate.numbers = rep(1:12, 8)
 plate.numbers
+plate.template = data.frame(plate.letters,
+                            plate.numbers,
+                            well = paste(plate.letters, plate.numbers, sep = ""))
+write.csv(plate.template, file = "plate-template.csv", row.names = FALSE)
+# 
+# Completed sample.info file
+sample.info = read.csv("20140627-sample-info.csv", header = TRUE, stringsAsFactors = TRUE)
+sample.info
+str(sample.info)
+# 
+# Removing the empty wells from tecanData
+# 
+# Pseudo-code for the filter
+# 
+# FOR I IN TECANDATA COLUMN NAMES
+#     IF CORRESPONDING SAMPLE.INFO SAMPLE IS NA
+#         THEN REMOVE THAN COLUMN, AND THE ONE NEXT TO IT
+# 
