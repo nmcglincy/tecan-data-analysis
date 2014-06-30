@@ -9,9 +9,9 @@ no.cycles
 
 
 tecanData = read.csv("20140627-gcn20arb1del.csv",
-						skip = 35,
-						header = TRUE,
-						check.names = FALSE)
+					skip = 35,
+					header = TRUE,
+					check.names = FALSE)
 
 # Some sort of class problem with the first two columns
 col.names = colnames(tecanData)
@@ -89,3 +89,16 @@ head(tecanData[,1:10])
 length(tecanData)
 tecanData = tecanData[,3:length(tecanData)]
 # 
+# Can use this object to look at what an empty well looks like
+plot(tecanData[,2], tecanData[,1])
+plot(tecanData[,4], tecanData[,3])
+plot(tecanData[,6], tecanData[,5])
+plot(tecanData[,8], tecanData[,7])
+# Some have a high value at the beginning, that makes it look like something is happening, but the range is
+# so small.
+# 
+# Template for sample.info file
+plate.letters = rep(LETTERS[1:8], each = 12)
+plate.letters
+plate.numbers = rep(1:12, 8)
+plate.numbers
