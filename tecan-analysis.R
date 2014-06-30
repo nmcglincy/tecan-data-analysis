@@ -120,3 +120,58 @@ str(sample.info)
 #     IF CORRESPONDING SAMPLE.INFO SAMPLE IS NA
 #         THEN REMOVE THAN COLUMN, AND THE ONE NEXT TO IT
 # 
+for (i in 1:length(colnames(tecanData))) {
+    if (colnames(tecanData)[i] %in% sample.info$well[which(sample.info$sample == "EMPTY")]) {
+        drops = c(drops, i, i+1)
+    }
+}
+drops
+tecanData.filtered = tecanData[,-drops, drop = FALSE]
+dim(tecanData)
+dim(tecanData.filtered)
+head(tecanData.filtered)
+# Looks like it worked
+# 
+# Extracting data into a long dataframe
+# 
+library(reshape2)
+growth.data = melt(tecanData.filtered, value.name = "OD600", variable.name = "well")
+head(growth.data)
+
+# time.data = numeric()
+# for (i in seq(from = 2, to = length(tecanData.filtered), by = 2)) {
+#     time.data = c(time.data, tecanData.filtered[,i])
+# }
+# head(time.data)
+# dim(time.data)
+# length(time.data)
+# # It's the right length; (5 * 12) * 96
+# tecan.data.long = data.frame(growth.data,
+#                              time.ms = time.data)
+# head(tecan.data.long)
+# head(subset(tecan.data.long, well == "C2"))
+# 
+# huh, that gave me the wrong match...
+# a different approach
+# 
+colnames(tecanData.filtered)
+length(colnames(tecanData.filtered)[seq(from = 2, to = length(tecanData.filtered), by = 2)])
+time.data = melt(tecanData.filtered[,seq(from = 2, to = length(tecanData.filtered), by = 2)])
+head(time.data)
+head(tecanData.filtered[,1:10])
+tecanData.long = data.frame(growth.data,
+                            time.ms = time.data$value)
+head(tecanData.long)
+head(subset(tecanData.long, well == "C2"))
+# 
+# that seems to have worked
+# Fuse with sample info:
+sample.info
+tecanData.long = merge(sample.info, tecanData.long,
+                       by.x = "well",
+                       by.y = "well")
+head(tecanData.long)
+# Looks good! let get to the graphs
+library(ggplot2)
+
+
