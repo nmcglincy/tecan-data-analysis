@@ -174,4 +174,12 @@ head(tecanData.long)
 # Looks good! let get to the graphs
 library(ggplot2)
 
+brewerplot <- function (palette) {
+    p + scale_fill_brewer(palette = palette) + opts(title=palette)
+}
+
+ggplot(tecanData.long, aes(x = time.ms, y = OD600, colour = sample, group = well)) +
+    geom_line(size = 2) +
+    scale_colour_brewer(palette = "Paired")
+
 
