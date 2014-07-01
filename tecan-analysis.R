@@ -114,10 +114,12 @@ data = read.tecanData("20140627-gcn20arb1del.csv", "20140627-sample-info.csv")
 tecanData = data[[1]]
 
 library(ggplot2)
-
-ggplot(tecanData.long, aes(x = time.ms/3600000, y = OD600, colour = sample, group = well)) +
+ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample, group = well)) +
     geom_point() +
     scale_colour_brewer(palette = "Paired") +
+    scale_x_continuous(name = "Time, hrs",
+                       breaks = seq(from = 0, to = 24, by = 4)) +
+    ggtitle("Raw OD600 readings") +
     theme(panel.border = element_rect(fill = NA, colour = "black"),
           axis.title.x = element_text(vjust = 0, size = 14),
           axis.title.y = element_text(vjust = 0.2, size = 14),
@@ -126,10 +128,13 @@ ggplot(tecanData.long, aes(x = time.ms/3600000, y = OD600, colour = sample, grou
           plot.title = element_text(size = 16),
           legend.text = element_text(size = 12),
           legend.title = element_text(size = 14))
-
-ggplot(tecanData.long, aes(x = time.ms/3600000, y = OD600, colour = sample, group = well)) +
+ggsave("raw.png", dpi = 400)
+ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample, group = well)) +
     geom_line(size = 1.5) +
     scale_colour_brewer(palette = "Paired") +
+    scale_x_continuous(name = "Time, hrs",
+                       breaks = seq(from = 0, to = 24, by = 4)) +
+    ggtitle("Raw OD600 readings, by well") +
     theme(panel.border = element_rect(fill = NA, colour = "black"),
           axis.title.x = element_text(vjust = 0, size = 14),
           axis.title.y = element_text(vjust = 0.2, size = 14),
@@ -138,23 +143,26 @@ ggplot(tecanData.long, aes(x = time.ms/3600000, y = OD600, colour = sample, grou
           plot.title = element_text(size = 16),
           legend.text = element_text(size = 12),
           legend.title = element_text(size = 14))
+ggsave("raw-by-well.png", dpi = 400)
 
-ggplot(tecanData.long, aes(x = time.ms/3600000, y = OD600, colour = sample)) +
-    geom_smooth(size = 1.5) +
-    scale_colour_brewer(palette = "Paired") +
-    theme(panel.border = element_rect(fill = NA, colour = "black"),
-          axis.title.x = element_text(vjust = 0, size = 14),
-          axis.title.y = element_text(vjust = 0.2, size = 14),
-          axis.text.x = element_text(size=12),
-          axis.text.y  = element_text(size=12),
-          plot.title = element_text(size = 16),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 14))
+# ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample)) +
+#     geom_smooth(size = 1.5, methd = "gam") +
+#     scale_colour_brewer(palette = "Paired") +
+#     theme(panel.border = element_rect(fill = NA, colour = "black"),
+#           axis.title.x = element_text(vjust = 0, size = 14),
+#           axis.title.y = element_text(vjust = 0.2, size = 14),
+#           axis.text.x = element_text(size=12),
+#           axis.text.y  = element_text(size=12),
+#           plot.title = element_text(size = 16),
+#           legend.text = element_text(size = 12),
+#           legend.title = element_text(size = 14))
 
-ggplot(tecanData.long, aes(x = time.ms/3600000, y = OD600, colour = sample, group = well)) +
+ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample, group = well)) +
     geom_line(size = 1.5) +
     scale_colour_brewer(palette = "Paired") +
     facet_grid(~ media) +
+    scale_x_continuous(name = "Time, hrs", breaks = seq(from = 0, to = 24, by = 4)) +
+    ggtitle("Raw OD600 readings, faceted by media") +
     theme(panel.border = element_rect(fill = NA, colour = "black"),
           axis.title.x = element_text(vjust = 0, size = 14),
           axis.title.y = element_text(vjust = 0.2, size = 14),
@@ -165,23 +173,24 @@ ggplot(tecanData.long, aes(x = time.ms/3600000, y = OD600, colour = sample, grou
           legend.title = element_text(size = 14),
           strip.text.x = element_text(size = 12),
           strip.text.y = element_text(size = 12))
+ggsave("rawLines-facet-media.png", dpi = 400)
 
-ggplot(tecanData.long, aes(x = time.ms/3600000, y = OD600, colour = sample)) +
-    geom_smooth(size = 1.5) +
-    scale_colour_brewer(palette = "Paired") +
-    facet_grid(~ media) +
-    theme(panel.border = element_rect(fill = NA, colour = "black"),
-          axis.title.x = element_text(vjust = 0, size = 14),
-          axis.title.y = element_text(vjust = 0.2, size = 14),
-          axis.text.x = element_text(size=12),
-          axis.text.y  = element_text(size=12),
-          plot.title = element_text(size = 16),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 14),
-          strip.text.x = element_text(size = 12),
-          strip.text.y = element_text(size = 12))
+# ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample)) +
+#     geom_smooth(size = 1.5) +
+#     scale_colour_brewer(palette = "Paired") +
+#     facet_grid(~ media) +
+#     theme(panel.border = element_rect(fill = NA, colour = "black"),
+#           axis.title.x = element_text(vjust = 0, size = 14),
+#           axis.title.y = element_text(vjust = 0.2, size = 14),
+#           axis.text.x = element_text(size=12),
+#           axis.text.y  = element_text(size=12),
+#           plot.title = element_text(size = 16),
+#           legend.text = element_text(size = 12),
+#           legend.title = element_text(size = 14),
+#           strip.text.x = element_text(size = 12),
+#           strip.text.y = element_text(size = 12))
 
-tecanData.negative = subset(tecanData.long, strain == "NONE" )
+tecanData.negative = subset(tecanData, strain == "NONE" )
 
 ggplot(tecanData.negative, aes(x = time.ms/3600000, y = OD600, colour = sample)) +
     geom_point() +
