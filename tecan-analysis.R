@@ -8,7 +8,7 @@ generate.sample.info.template = function() {
   write.csv(plate.template, file = "plate-template.csv", row.names = FALSE)
   rm(plate.letters, plate.numbers, plate.template)
 }
-
+# 
 # A function to read in tecan data and return a long annotated data.frame:
 read.tecanData = function(datafile, samplefile) {
   # 
@@ -109,10 +109,12 @@ read.tecanData = function(datafile, samplefile) {
        time.data = time.data,
        header = header)
 }
-
 data = read.tecanData("20140627-gcn20arb1del.csv", "20140627-sample-info.csv")
+# 
+# Extracting the formatted data for plotting
 tecanData = data[[1]]
-
+# 
+# EDA plotting of raw data 
 library(ggplot2)
 ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample, group = well)) +
     geom_point() +
@@ -144,19 +146,6 @@ ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample, group = w
           legend.text = element_text(size = 12),
           legend.title = element_text(size = 14))
 ggsave("raw-by-well.png", dpi = 400)
-
-# ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample)) +
-#     geom_smooth(size = 1.5, methd = "gam") +
-#     scale_colour_brewer(palette = "Paired") +
-#     theme(panel.border = element_rect(fill = NA, colour = "black"),
-#           axis.title.x = element_text(vjust = 0, size = 14),
-#           axis.title.y = element_text(vjust = 0.2, size = 14),
-#           axis.text.x = element_text(size=12),
-#           axis.text.y  = element_text(size=12),
-#           plot.title = element_text(size = 16),
-#           legend.text = element_text(size = 12),
-#           legend.title = element_text(size = 14))
-
 ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample, group = well)) +
     geom_line(size = 1.5) +
     scale_colour_brewer(palette = "Paired") +
@@ -174,27 +163,12 @@ ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample, group = w
           strip.text.x = element_text(size = 12),
           strip.text.y = element_text(size = 12))
 ggsave("rawLines-facet-media.png", dpi = 400)
-
-# ggplot(tecanData, aes(x = time.ms/3600000, y = OD600, colour = sample)) +
-#     geom_smooth(size = 1.5) +
-#     scale_colour_brewer(palette = "Paired") +
-#     facet_grid(~ media) +
-#     theme(panel.border = element_rect(fill = NA, colour = "black"),
-#           axis.title.x = element_text(vjust = 0, size = 14),
-#           axis.title.y = element_text(vjust = 0.2, size = 14),
-#           axis.text.x = element_text(size=12),
-#           axis.text.y  = element_text(size=12),
-#           plot.title = element_text(size = 16),
-#           legend.text = element_text(size = 12),
-#           legend.title = element_text(size = 14),
-#           strip.text.x = element_text(size = 12),
-#           strip.text.y = element_text(size = 12))
-
 tecanData.negative = subset(tecanData, strain == "NONE" )
-
 ggplot(tecanData.negative, aes(x = time.ms/3600000, y = OD600, colour = sample)) +
     geom_point() +
     geom_line(aes(group = well)) +
+    scale_x_continuous(name = "Time, hrs", breaks = seq(from = 0, to = 24, by = 4)) +
+    ggtitle("Raw OD600 readings, median only wells") +
     theme(panel.border = element_rect(fill = NA, colour = "black"),
           axis.title.x = element_text(vjust = 0, size = 14),
           axis.title.y = element_text(vjust = 0.2, size = 14),
@@ -203,3 +177,32 @@ ggplot(tecanData.negative, aes(x = time.ms/3600000, y = OD600, colour = sample))
           plot.title = element_text(size = 16),
           legend.text = element_text(size = 12),
           legend.title = element_text(size = 14))
+ggsave("raw-neg-wells.png", dpi = 400)
+# 
+# Background correction - Nick's suggestion of taking per-well median over time-course, then accross-well median
+# of these medians and using this as a per-media background correction.
+library(plyr)
+tecanData.neg.summ = ddply(tecanData.negative,
+                          .(well),
+                          summarize,
+                          well.median = median(OD600))
+sample.info = data[[2]]
+tecanData.neg.summ = merge(tecanData.neg.summ,
+                           sample.info,
+                           by.x = "well",
+                           by.y = "well")
+media.bkgd = ddply(tecanData.neg.summ,
+                    .(media),
+                    summarize,
+                    media.median = median(well.median))
+media.bkgd
+# 
+# Applying the correction accross the actual data
+tecanData = tecanData[order(tecanData$media),]
+bkgd = c(rep(0.129700, length(which(tecanData$media == "AA-SHOCK"))), rep(0.135725, length(which(tecanData$media == "YEPD"))))
+tecanData = data.frame(tecanData, bkgd)
+library(dplyr)
+tecanData = tecanData %.%
+  mutate(corrected.OD600 = OD600 - bkgd)
+#
+library(grofit)
