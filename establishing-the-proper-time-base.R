@@ -34,7 +34,12 @@ abline(v = mean(good.timeData.diffs.vt), col = "red")
 dev.off()
 # 
 # Mean and median don't really feel right here, ca. double the number of tags are in the class 913405 - 913410
-?mode
 table(good.timeData.diffs.vt)
-plot(table(good.timeData.diffs.vt))
-?plot
+png(file = "table-plot.png", width = 7, height = 7, units = "in", res = 300)
+plot(table(good.timeData.diffs.vt), las = 2, xlab = "")
+dev.off()
+# 
+# Surprisingly sparse range of values
+# Looks like there are two modal classes essentially, so the median might be a good pick after all.
+med.cycle.diff = median(good.timeData.diffs.vt)
+
