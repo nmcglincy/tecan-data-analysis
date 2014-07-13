@@ -138,19 +138,14 @@ dev.off()
 # 
 # I choose the median
 med.timeDelay.plate.halves = median(good.timeData$E12 - good.timeData$A12)
-ls()
-med.timeDelay.plate.halves
 # 
-# 
+# Constructing the time-base:
 # 
 tecanTime = data.frame(row = rep(plate.letters, no.cycles),
 					   column = rep(plate.numbers, no.cycles),
 					   well = rep(wells, no.cycles),
 					   cycle = rep(1:no.cycles, each = no.cycles))
-tecanTime
-
 expt.time = numeric()
-
 for (i in 1:nrow(tecanTime)) {
 	if(tecanTime$row[i] %in% LETTERS[1:4]) {
 		expt.time[i] = ((tecanTime$column[i] -1) * 640) + ((tecanTime$cycle[i] -1) * med.cycle.diff)
@@ -158,48 +153,40 @@ for (i in 1:nrow(tecanTime)) {
 		expt.time[i] = (((22 * 640) + med.timeDelay.plate.halves) - (640 * (tecanTime$column[i] -1))) + ((tecanTime$cycle[i] -1) * med.cycle.diff)
 	}
 }
-
-head(expt.time, 500)
-head(tecanTime)
-
 tecanTime$expt.time = expt.time
-head(tecanTime)
 # 
 # Need to explot correlation with good.timeDatq to see whether there are any systematic deviations evident 
-
-good.timeData
 good.timeData.long = melt(good.timeData)
-head(good.timeData.long, 20)
-ls()
-no.cycles
+# head(good.timeData.long, 20)
+# ls()
+# no.cycles
 cycles = rep(1:11, 96)
-length(cycles)
+# length(cycles)
 good.timeData.long$cycle = cycles
 colnames(good.timeData.long) = c("well", "time", "cycle")
 good.timeData.long$row = rep(LETTERS[1:8], each = 11 * 12)
 good.timeData.long$column = rep(rep(1:12, each = 11), 8)
-good.timeData.long
-head(tecanTime)
+# good.timeData.long
+# head(tecanTime)
 tecanTime.short = subset(tecanTime, cycle <= 11)
-dim(tecanTime)
-dim(tecanTime.short)
-?sort
-?order
+# dim(tecanTime)
+# dim(tecanTime.short)
 tecanTime.short = tecanTime.short[order(tecanTime.short$well),]
-head(tecanTime.short, 20)
+# head(tecanTime.short, 20)
 good.timeData.long = good.timeData.long[order(good.timeData.long$well),]
-head(good.timeData.long, 20)
-str(good.timeData.long)
-str(tecanTime.short)
+# head(good.timeData.long, 20)
+# str(good.timeData.long)
+# str(tecanTime.short)
 # 
-# try something
-plot(sort(good.timeData.long$time), sort(tecanTime.short$expt.time))
-# Seem like this is valid to me
+# refactoring, so I can sort things properly
 tecanTime.short$well = factor(tecanTime.short$well, levels = wells)
+png(file = "time-base-correlation.png", width = 7, height = 7, units = "in", res = 300)
 plot(good.timeData.long$time, tecanTime.short$expt.time,
      xlim = c(0, 2000000), ylim = c(0, 2000000))
-plot(good.timeData.long$time, tecanTime.short$expt.time,
-     xlim = c(0, 10000), ylim = c(0, 10000))
-cor(good.timeData.long$time, tecanTime.short$expt.time)
-# lol, this is 1 - looks like it worked tecanTime is the thing,
+dev.off()
+# 
+# Seems like they agree pretty well!
+# plot(good.timeData.long$time, tecanTime.short$expt.time,
+#      xlim = c(0, 10000), ylim = c(0, 10000))
+# cor(good.timeData.long$time, tecanTime.short$expt.time)
 # TODO - need to clean up some.
