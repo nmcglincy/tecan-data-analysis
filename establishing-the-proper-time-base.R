@@ -201,4 +201,5 @@ plot(good.timeData.long$time, tecanTime.short$expt.time,
 plot(good.timeData.long$time, tecanTime.short$expt.time,
      xlim = c(0, 10000), ylim = c(0, 10000))
 cor(good.timeData.long$time, tecanTime.short$expt.time)
-# lol, this is 1 - looks like it worked
+# lol, this is 1 - looks like it worked tecanTime is the thing,
+# TODO - need to clean up some.
