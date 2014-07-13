@@ -63,7 +63,6 @@ med.cycle.diff
 # Ok, so I had the crazy thought that the cycle to cycle difference might depend on plate location
 # Examine this using a long dataframe and ggplot2
 library(reshape2)
-?melt
 good.timeData.diffs.df.long = melt(good.timeData.diffs.df,
 									value.name = "time.ms")
 # head(good.timeData.diffs.df.long)
@@ -139,6 +138,8 @@ dev.off()
 # 
 # I choose the median
 med.timeDelay.plate.halves = median(good.timeData$E12 - good.timeData$A12)
+ls()
+med.timeDelay.plate.halves
 # 
 # 
 # 
@@ -154,9 +155,11 @@ for (i in 1:nrow(tecanTime)) {
 	if(tecanTime$row[i] %in% LETTERS[1:4]) {
 		expt.time[i] = ((tecanTime$column[i] -1) * 640) + ((tecanTime$cycle[i] -1) * med.cycle.diff)
 	} else {
-		expt.time[i] = median.timeDelay.plate.halves
+		expt.time[i] = (((22 * 640) + med.timeDelay.plate.halves) - (640 * (tecanTime$column[i] -1))) + ((tecanTime$cycle[i] -1) * med.cycle.diff)
 	}
 }
 
 head(expt.time, 500)
+head(tecanTime)
+
 
