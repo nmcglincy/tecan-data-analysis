@@ -143,3 +143,47 @@ ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample,
 # Growth curve analysis
 library(grofit)
 head(tecanData)
+# 
+# writing my own grofit smooth.spline function
+?grofit
+gcFitSpline
+# 
+# pseudo-code:
+# will work quicker on a list by sample
+# spline fit
+tecanData.l = dlply(tecanData, .(sample, well))
+str(tecanData.l)
+names(tecanData.l)
+foo = tecanData.l[[43]]
+foo
+with(foo, plot(expt.time/3600000, corrected.abs))
+spl.fit = smooth.spline(foo$expt.time/3600000, foo$corrected.abs)
+plot(foo$expt.time/3600000, foo$corrected.abs)
+lines(spl.fit, col = "red")
+firstDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 1)
+firstDeriv
+plot(foo$expt.time/3600000, foo$corrected.abs)
+lines(spl.fit, col = "red")
+lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+
+# calculating mu
+# Change in abs per hour, because fit was on time/3600000
+mu = firstDeriv$y[which.max(firstDeriv$y)]
+mu.time = firstDeriv$x[which.max(firstDeriv$y)]
+mu.time 
+
+plot(foo$expt.time/3600000, foo$corrected.abs)
+lines(spl.fit, col = "red")
+lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+abline(v = mu.time, col = "green", lty = 2)
+
+#
+# calculating lambda - the time of the lag phase
+
+
+  index <- which.max(dydt.spl$y)
+  t.max <- dydt.spl$x[index]
+  dydt.max <- max(dydt.spl$y)
+  y.max <- y.spl$y[index]
+  mu.spl <- dydt.max
