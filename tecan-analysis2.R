@@ -87,10 +87,11 @@ media.bkgd = ddply(tecanData.neg.summ,
 # media.bkgd
 tecanData = tecanData[order(tecanData$media),]
 # tecanData
-bkgd = c(rep(media.bkgd$media.median[1], length(which(tecanData$media == "AA-SHOCK"))), rep(media.bkgd$media.median[2], length(which(tecanData$media == "YEPD"))))
+bkgd = c(rep(media.bkgd$media.median[1], length(which(tecanData$media == "AA-SHOCK"))), 
+         rep(media.bkgd$media.median[2], length(which(tecanData$media == "YEPD"))))
 tecanData = data.frame(tecanData, bkgd)
 tecanData$corrected.abs = tecanData$abs - tecanData$bkgd
-# head(tecanData)
+head(tecanData)
 
 ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample, group = well)) +
     geom_point() +
@@ -139,3 +140,6 @@ ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample,
           strip.text.x = element_text(size = 12),
           strip.text.y = element_text(size = 12))
 
+# Growth curve analysis
+library(grofit)
+head(tecanData)
