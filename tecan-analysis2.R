@@ -220,6 +220,8 @@ points(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
 abline(v = lambda.time, col = "darkgreen", lty = 2)
 abline(h = A, col = "darkgreen", lty = 2)
 
+# TODO - how would I calculate the intercept to have a graphic of the line of acceleration?
+
 # 
 # the AUC - 
 AUC = grofit::low.integrate(spl.fit$x, spl.fit$y)
@@ -243,10 +245,9 @@ growth.curve.analysis = function(foo) {
   A = max(spl.fit$y)
   AUC = grofit::low.integrate(spl.fit$x, spl.fit$y)
 # Making a nice graph
-  png(file = paste(foo$sample, foo$well, ".png" sep = "-"), width = 7, height = 7, units = "in", res = 300)
+  png(file = paste(paste(foo$sample, foo$well, sep = "-"), ".png", sep = ""), width = 7, height = 7, units = "in", res = 300)
   plot(foo$expt.time/3600000, foo$corrected.abs,
-       xlab = "Time, hrs", ylab = "Absorbance, A.U.",
-       main = paste(foo$sample, foo$well, sep = "."))
+       xlab = "Time, hrs", ylab = "Absorbance, A.U.")
   lines(spl.fit, col = "red")
   lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
   points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
@@ -256,9 +257,9 @@ growth.curve.analysis = function(foo) {
   abline(v = lambda.time, col = "darkgreen", lty = 2)
   abline(h = A, col = "darkgreen", lty = 2)
   dev.off()
-# A list to hold the results
+# A list to hold the results, needs some names
   list(spl.fit, firstDeriv, mu, mu.time, secondDeriv, lambda, lambda.time, A, AUC)
 }
 
-gc.analysis = grow
-
+gc.analysis = growth.curve.analysis(tecanData.l[[43]])
+gc.analysis
