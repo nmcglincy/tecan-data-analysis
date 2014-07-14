@@ -168,9 +168,15 @@ firstDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 1)
 # calculating mu
 # Change in abs per hour, because fit was on time/3600000
 mu = firstDeriv$y[which.max(firstDeriv$y)]
-# mu
+mu
 mu.time = firstDeriv$x[which.max(firstDeriv$y)]
-# mu.time 
+mu.time 
+
+# deriving line based on mu
+# at mu.time, the equivalent value of spl.fit is:
+spl.fit$y[which.max(firstDeriv$y)]
+# [1] 0.4456126
+
 
 # plot(foo$expt.time/3600000, foo$corrected.abs)
 # lines(spl.fit, col = "red")
@@ -219,7 +225,14 @@ lines(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
 points(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
 abline(v = lambda.time, col = "darkgreen", lty = 2)
 abline(h = A, col = "darkgreen", lty = 2)
+abline(-0.745, 0.134)
 
+mu
+mu.time
+mu * mu.time
+spl.fit$y[which.max(firstDeriv$y)]
+abline(a = spl.fit$y[which.max(firstDeriv$y)] - (mu * mu.time) , b = mu)
+rm(foo)
 # TODO - how would I calculate the intercept to have a graphic of the line of acceleration?
 
 # 
@@ -246,7 +259,7 @@ growth.curve.analysis = function(foo) {
   AUC = grofit::low.integrate(spl.fit$x, spl.fit$y)
 # Making a nice graph
   png(file = paste(paste(foo$sample, foo$well, sep = "-"), ".png", sep = ""), width = 7, height = 7, units = "in", res = 300)
-  plot(foo$expt.time/3600000, foo$corrected.abs,
+  plot(foo$expt.time/3600000, foo$corrected.abs, ylim = c(0,1),
        xlab = "Time, hrs", ylab = "Absorbance, A.U.")
   lines(spl.fit, col = "red")
   lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
@@ -256,10 +269,11 @@ growth.curve.analysis = function(foo) {
   points(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
   abline(v = lambda.time, col = "darkgreen", lty = 2)
   abline(h = A, col = "darkgreen", lty = 2)
+  abline(a = spl.fit$y[which.max(firstDeriv$y)] - (mu * mu.time) , b = mu)
   dev.off()
 # A list to hold the results, TODO - needs some names, and a more user friendly order
   list(spl.fit, firstDeriv, mu, mu.time, secondDeriv, lambda, lambda.time, A, AUC)
 }
 
 gc.analysis = growth.curve.analysis(tecanData.l[[43]])
-gc.analysis
+gc.analysis2 = lapply(tecanData.l, growth.curve.analysis)
