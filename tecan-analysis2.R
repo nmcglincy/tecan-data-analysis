@@ -1,72 +1,71 @@
 source("read-tecan-data2.R")
-data = read.tecan.data2("20140627-gcn20arb1del.csv", 
-						            "20140627-sample-info.csv")
+data = read.tecan.data2("20140627-gcn20arb1del.csv", "20140627-sample-info.csv")
 tecanData = data[[1]]
 # 
 # EDA plotting of raw data 
 library(ggplot2)
-ggplot(tecanData, aes(x = expt.time/3600000, y = abs, colour = sample, group = well)) +
-    geom_point() +
-    scale_colour_brewer(palette = "Paired") +
-    scale_x_continuous(name = "Time, hrs",
-                       breaks = seq(from = 0, to = 24, by = 4)) +
-    ggtitle("Raw OD600 readings") +
-    theme(panel.border = element_rect(fill = NA, colour = "black"),
-          axis.title.x = element_text(vjust = 0, size = 14),
-          axis.title.y = element_text(vjust = 0.2, size = 14),
-          axis.text.x = element_text(size=12),
-          axis.text.y  = element_text(size=12),
-          plot.title = element_text(size = 16),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 14))
-ggsave("raw.png", dpi = 400)
-ggplot(tecanData, aes(x = expt.time/3600000, y = abs, colour = sample, group = well)) +
-    geom_line(size = 1.5) +
-    scale_colour_brewer(palette = "Paired") +
-    scale_x_continuous(name = "Time, hrs",
-                       breaks = seq(from = 0, to = 24, by = 4)) +
-    ggtitle("Raw OD600 readings, by well") +
-    theme(panel.border = element_rect(fill = NA, colour = "black"),
-          axis.title.x = element_text(vjust = 0, size = 14),
-          axis.title.y = element_text(vjust = 0.2, size = 14),
-          axis.text.x = element_text(size=12),
-          axis.text.y  = element_text(size=12),
-          plot.title = element_text(size = 16),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 14))
-ggsave("raw-by-well.png", dpi = 400)
-ggplot(tecanData, aes(x = expt.time/3600000, y = abs, colour = sample, group = well)) +
-    geom_line(size = 1.5) +
-    scale_colour_brewer(palette = "Paired") +
-    facet_grid(~ media) +
-    scale_x_continuous(name = "Time, hrs", breaks = seq(from = 0, to = 24, by = 4)) +
-    ggtitle("Raw OD600 readings, faceted by media") +
-    theme(panel.border = element_rect(fill = NA, colour = "black"),
-          axis.title.x = element_text(vjust = 0, size = 14),
-          axis.title.y = element_text(vjust = 0.2, size = 14),
-          axis.text.x = element_text(size=12),
-          axis.text.y  = element_text(size=12),
-          plot.title = element_text(size = 16),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 14),
-          strip.text.x = element_text(size = 12),
-          strip.text.y = element_text(size = 12))
-ggsave("rawLines-facet-media.png", dpi = 400)
+# ggplot(tecanData, aes(x = expt.time/3600000, y = abs, colour = sample, group = well)) +
+#     geom_point() +
+#     scale_colour_brewer(palette = "Paired") +
+#     scale_x_continuous(name = "Time, hrs",
+#                        breaks = seq(from = 0, to = 24, by = 4)) +
+#     ggtitle("Raw OD600 readings") +
+#     theme(panel.border = element_rect(fill = NA, colour = "black"),
+#           axis.title.x = element_text(vjust = 0, size = 14),
+#           axis.title.y = element_text(vjust = 0.2, size = 14),
+#           axis.text.x = element_text(size=12),
+#           axis.text.y  = element_text(size=12),
+#           plot.title = element_text(size = 16),
+#           legend.text = element_text(size = 12),
+#           legend.title = element_text(size = 14))
+# ggsave("raw.png", dpi = 400)
+# ggplot(tecanData, aes(x = expt.time/3600000, y = abs, colour = sample, group = well)) +
+#     geom_line(size = 1.5) +
+#     scale_colour_brewer(palette = "Paired") +
+#     scale_x_continuous(name = "Time, hrs",
+#                        breaks = seq(from = 0, to = 24, by = 4)) +
+#     ggtitle("Raw OD600 readings, by well") +
+#     theme(panel.border = element_rect(fill = NA, colour = "black"),
+#           axis.title.x = element_text(vjust = 0, size = 14),
+#           axis.title.y = element_text(vjust = 0.2, size = 14),
+#           axis.text.x = element_text(size=12),
+#           axis.text.y  = element_text(size=12),
+#           plot.title = element_text(size = 16),
+#           legend.text = element_text(size = 12),
+#           legend.title = element_text(size = 14))
+# ggsave("raw-by-well.png", dpi = 400)
+# ggplot(tecanData, aes(x = expt.time/3600000, y = abs, colour = sample, group = well)) +
+#     geom_line(size = 1.5) +
+#     scale_colour_brewer(palette = "Paired") +
+#     facet_grid(~ media) +
+#     scale_x_continuous(name = "Time, hrs", breaks = seq(from = 0, to = 24, by = 4)) +
+#     ggtitle("Raw OD600 readings, faceted by media") +
+#     theme(panel.border = element_rect(fill = NA, colour = "black"),
+#           axis.title.x = element_text(vjust = 0, size = 14),
+#           axis.title.y = element_text(vjust = 0.2, size = 14),
+#           axis.text.x = element_text(size=12),
+#           axis.text.y  = element_text(size=12),
+#           plot.title = element_text(size = 16),
+#           legend.text = element_text(size = 12),
+#           legend.title = element_text(size = 14),
+#           strip.text.x = element_text(size = 12),
+#           strip.text.y = element_text(size = 12))
+# ggsave("rawLines-facet-media.png", dpi = 400)
 tecanData.negative = subset(tecanData, strain == "NONE" )
-ggplot(tecanData.negative, aes(x = expt.time/3600000, y = abs, colour = sample)) +
-    geom_point() +
-    geom_line(aes(group = well)) +
-    scale_x_continuous(name = "Time, hrs", breaks = seq(from = 0, to = 24, by = 4)) +
-    ggtitle("Raw OD600 readings, median only wells") +
-    theme(panel.border = element_rect(fill = NA, colour = "black"),
-          axis.title.x = element_text(vjust = 0, size = 14),
-          axis.title.y = element_text(vjust = 0.2, size = 14),
-          axis.text.x = element_text(size=12),
-          axis.text.y  = element_text(size=12),
-          plot.title = element_text(size = 16),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 14))
-ggsave("raw-neg-wells.png", dpi = 400)
+# ggplot(tecanData.negative, aes(x = expt.time/3600000, y = abs, colour = sample)) +
+#     geom_point() +
+#     geom_line(aes(group = well)) +
+#     scale_x_continuous(name = "Time, hrs", breaks = seq(from = 0, to = 24, by = 4)) +
+#     ggtitle("Raw OD600 readings, median only wells") +
+#     theme(panel.border = element_rect(fill = NA, colour = "black"),
+#           axis.title.x = element_text(vjust = 0, size = 14),
+#           axis.title.y = element_text(vjust = 0.2, size = 14),
+#           axis.text.x = element_text(size=12),
+#           axis.text.y  = element_text(size=12),
+#           plot.title = element_text(size = 16),
+#           legend.text = element_text(size = 12),
+#           legend.title = element_text(size = 14))
+# ggsave("raw-neg-wells.png", dpi = 400)
 # 
 library(plyr)
 tecanData.neg.summ = ddply(tecanData.negative,
@@ -91,62 +90,60 @@ bkgd = c(rep(media.bkgd$media.median[1], length(which(tecanData$media == "AA-SHO
          rep(media.bkgd$media.median[2], length(which(tecanData$media == "YEPD"))))
 tecanData = data.frame(tecanData, bkgd)
 tecanData$corrected.abs = tecanData$abs - tecanData$bkgd
-head(tecanData)
 
-ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample, group = well)) +
-    geom_point() +
-    scale_colour_brewer(palette = "Paired") +
-    scale_x_continuous(name = "Time, hrs",
-                       breaks = seq(from = 0, to = 24, by = 4)) +
-    ggtitle("Corrected OD600 readings") +
-    theme(panel.border = element_rect(fill = NA, colour = "black"),
-          axis.title.x = element_text(vjust = 0, size = 14),
-          axis.title.y = element_text(vjust = 0.2, size = 14),
-          axis.text.x = element_text(size=12),
-          axis.text.y  = element_text(size=12),
-          plot.title = element_text(size = 16),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 14))
-
-ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample, group = well)) +
-    geom_line(size = 1.5) +
-    scale_colour_brewer(palette = "Paired") +
-    scale_x_continuous(name = "Time, hrs",
-                       breaks = seq(from = 0, to = 24, by = 4)) +
-    ggtitle("Corrected OD600 readings, by well") +
-    theme(panel.border = element_rect(fill = NA, colour = "black"),
-          axis.title.x = element_text(vjust = 0, size = 14),
-          axis.title.y = element_text(vjust = 0.2, size = 14),
-          axis.text.x = element_text(size=12),
-          axis.text.y  = element_text(size=12),
-          plot.title = element_text(size = 16),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 14))
-
-ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample, group = well)) +
-    geom_line(size = 1.5) +
-    scale_colour_brewer(palette = "Paired") +
-    facet_grid(~ media) +
-    scale_x_continuous(name = "Time, hrs", breaks = seq(from = 0, to = 24, by = 4)) +
-    ggtitle("Corrected OD600 readings, faceted by media") +
-    theme(panel.border = element_rect(fill = NA, colour = "black"),
-          axis.title.x = element_text(vjust = 0, size = 14),
-          axis.title.y = element_text(vjust = 0.2, size = 14),
-          axis.text.x = element_text(size=12),
-          axis.text.y  = element_text(size=12),
-          plot.title = element_text(size = 16),
-          legend.text = element_text(size = 12),
-          legend.title = element_text(size = 14),
-          strip.text.x = element_text(size = 12),
-          strip.text.y = element_text(size = 12))
+# head(tecanData)
+# ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample, group = well)) +
+#     geom_point() +
+#     scale_colour_brewer(palette = "Paired") +
+#     scale_x_continuous(name = "Time, hrs",
+#                        breaks = seq(from = 0, to = 24, by = 4)) +
+#     ggtitle("Corrected OD600 readings") +
+#     theme(panel.border = element_rect(fill = NA, colour = "black"),
+#           axis.title.x = element_text(vjust = 0, size = 14),
+#           axis.title.y = element_text(vjust = 0.2, size = 14),
+#           axis.text.x = element_text(size=12),
+#           axis.text.y  = element_text(size=12),
+#           plot.title = element_text(size = 16),
+#           legend.text = element_text(size = 12),
+#           legend.title = element_text(size = 14))
+# 
+# ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample, group = well)) +
+#     geom_line(size = 1.5) +
+#     scale_colour_brewer(palette = "Paired") +
+#     scale_x_continuous(name = "Time, hrs",
+#                        breaks = seq(from = 0, to = 24, by = 4)) +
+#     ggtitle("Corrected OD600 readings, by well") +
+#     theme(panel.border = element_rect(fill = NA, colour = "black"),
+#           axis.title.x = element_text(vjust = 0, size = 14),
+#           axis.title.y = element_text(vjust = 0.2, size = 14),
+#           axis.text.x = element_text(size=12),
+#           axis.text.y  = element_text(size=12),
+#           plot.title = element_text(size = 16),
+#           legend.text = element_text(size = 12),
+#           legend.title = element_text(size = 14))
+# 
+# ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample, group = well)) +
+#     geom_line(size = 1.5) +
+#     scale_colour_brewer(palette = "Paired") +
+#     facet_grid(~ media) +
+#     scale_x_continuous(name = "Time, hrs", breaks = seq(from = 0, to = 24, by = 4)) +
+#     ggtitle("Corrected OD600 readings, faceted by media") +
+#     theme(panel.border = element_rect(fill = NA, colour = "black"),
+#           axis.title.x = element_text(vjust = 0, size = 14),
+#           axis.title.y = element_text(vjust = 0.2, size = 14),
+#           axis.text.x = element_text(size=12),
+#           axis.text.y  = element_text(size=12),
+#           plot.title = element_text(size = 16),
+#           legend.text = element_text(size = 12),
+#           legend.title = element_text(size = 14),
+#           strip.text.x = element_text(size = 12),
+#           strip.text.y = element_text(size = 12))
 
 # Growth curve analysis
 library(grofit)
 head(tecanData)
 # 
 # writing my own grofit smooth.spline function
-?grofit
-gcFitSpline
 # 
 # pseudo-code:
 # will work quicker on a list by sample
@@ -157,9 +154,11 @@ names(tecanData.l)
 foo = tecanData.l[[43]]
 foo
 with(foo, plot(expt.time/3600000, corrected.abs))
+
 spl.fit = smooth.spline(foo$expt.time/3600000, foo$corrected.abs)
 plot(foo$expt.time/3600000, foo$corrected.abs)
 lines(spl.fit, col = "red")
+
 firstDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 1)
 firstDeriv
 plot(foo$expt.time/3600000, foo$corrected.abs)
@@ -169,6 +168,7 @@ lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
 # calculating mu
 # Change in abs per hour, because fit was on time/3600000
 mu = firstDeriv$y[which.max(firstDeriv$y)]
+mu
 mu.time = firstDeriv$x[which.max(firstDeriv$y)]
 mu.time 
 
@@ -180,6 +180,32 @@ abline(v = mu.time, col = "green", lty = 2)
 
 #
 # calculating lambda - the time of the lag phase
+secondDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 2)
+secondDeriv
+plot(foo$expt.time/3600000, foo$corrected.abs)
+lines(spl.fit, col = "red")
+lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+abline(v = mu.time, col = "green", lty = 2)
+lines(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
+points(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
+
+lambda = secondDeriv$y[which.max(secondDeriv$y)]
+lambda
+lambda.time = secondDeriv$x[which.max(secondDeriv$y)]
+lambda.time
+
+plot(foo$expt.time/3600000, foo$corrected.abs)
+lines(spl.fit, col = "red")
+lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+abline(v = mu.time, col = "green", lty = 2)
+lines(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
+points(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
+abline(v = lambda.time, col = "green", lty = 2)
+
+# 
+# 
 
 
   index <- which.max(dydt.spl$y)
