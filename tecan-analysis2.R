@@ -149,67 +149,85 @@ head(tecanData)
 # will work quicker on a list by sample
 # spline fit
 tecanData.l = dlply(tecanData, .(sample, well))
-str(tecanData.l)
-names(tecanData.l)
+# str(tecanData.l)
+# names(tecanData.l)
 foo = tecanData.l[[43]]
-foo
-with(foo, plot(expt.time/3600000, corrected.abs))
+# foo
+# with(foo, plot(expt.time/3600000, corrected.abs))
 
 spl.fit = smooth.spline(foo$expt.time/3600000, foo$corrected.abs)
-plot(foo$expt.time/3600000, foo$corrected.abs)
-lines(spl.fit, col = "red")
+# plot(foo$expt.time/3600000, foo$corrected.abs)
+# lines(spl.fit, col = "red")
 
 firstDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 1)
-firstDeriv
-plot(foo$expt.time/3600000, foo$corrected.abs)
-lines(spl.fit, col = "red")
-lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+# firstDeriv
+# plot(foo$expt.time/3600000, foo$corrected.abs)
+# lines(spl.fit, col = "red")
+# lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
 
 # calculating mu
 # Change in abs per hour, because fit was on time/3600000
 mu = firstDeriv$y[which.max(firstDeriv$y)]
-mu
+# mu
 mu.time = firstDeriv$x[which.max(firstDeriv$y)]
-mu.time 
+# mu.time 
 
-plot(foo$expt.time/3600000, foo$corrected.abs)
-lines(spl.fit, col = "red")
-lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
-points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
-abline(v = mu.time, col = "green", lty = 2)
+# plot(foo$expt.time/3600000, foo$corrected.abs)
+# lines(spl.fit, col = "red")
+# lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+# points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+# abline(v = mu.time, col = "green", lty = 2)
 
 #
 # calculating lambda - the time of the lag phase
 secondDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 2)
-secondDeriv
-plot(foo$expt.time/3600000, foo$corrected.abs)
-lines(spl.fit, col = "red")
-lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
-points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
-abline(v = mu.time, col = "green", lty = 2)
-lines(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
-points(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
+# secondDeriv
+# plot(foo$expt.time/3600000, foo$corrected.abs)
+# lines(spl.fit, col = "red")
+# lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+# points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+# abline(v = mu.time, col = "green", lty = 2)
+# lines(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
+# points(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
 
 lambda = secondDeriv$y[which.max(secondDeriv$y)]
-lambda
+# lambda
 lambda.time = secondDeriv$x[which.max(secondDeriv$y)]
-lambda.time
+# lambda.time
+
+# plot(foo$expt.time/3600000, foo$corrected.abs)
+# lines(spl.fit, col = "red")
+# lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+# points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+# abline(v = mu.time, col = "green", lty = 2)
+# lines(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
+# points(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
+# abline(v = lambda.time, col = "green", lty = 2)
+
+# 
+# the maximum growth level, A
+# str(spl.fit)
+A = max(spl.fit$y)
+# A
 
 plot(foo$expt.time/3600000, foo$corrected.abs)
 lines(spl.fit, col = "red")
 lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
 points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
-abline(v = mu.time, col = "green", lty = 2)
+abline(v = mu.time, col = "darkgreen", lty = 2)
 lines(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
 points(firstDeriv$x, secondDeriv$y/max(secondDeriv$y), col = "purple")
-abline(v = lambda.time, col = "green", lty = 2)
+abline(v = lambda.time, col = "darkgreen", lty = 2)
+abline(h = A, col = "darkgreen", lty = 2)
 
 # 
+# the AUC - 
+AUC = grofit::low.integrate(spl.fit$x, spl.fit$y)
+# AUC
+
 # 
+# A function to lapply across the list of results
 
-
-  index <- which.max(dydt.spl$y)
-  t.max <- dydt.spl$x[index]
-  dydt.max <- max(dydt.spl$y)
-  y.max <- y.spl$y[index]
-  mu.spl <- dydt.max
+growth.curve.analysis = function(x) {
+  
+}
