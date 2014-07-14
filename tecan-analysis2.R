@@ -257,7 +257,7 @@ growth.curve.analysis = function(foo) {
   abline(v = lambda.time, col = "darkgreen", lty = 2)
   abline(h = A, col = "darkgreen", lty = 2)
   dev.off()
-# A list to hold the results, needs some names
+# A list to hold the results, TODO - needs some names, and a more user friendly order
   list(spl.fit, firstDeriv, mu, mu.time, secondDeriv, lambda, lambda.time, A, AUC)
 }
 
