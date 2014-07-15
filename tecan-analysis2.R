@@ -281,6 +281,8 @@ gc.analysis
 
 gc.analysis2 = lapply(tecanData.l, growth.curve.analysis)
 str(gc.analysis2)
-tom = lapply(gc.analysis2, ldply)
+tom = lapply(gc.analysis2, as.data.frame)
 str(tom)
 ldply(tom)
+sample.info
+sample.info$
