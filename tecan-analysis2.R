@@ -233,7 +233,7 @@ mu * mu.time
 spl.fit$y[which.max(firstDeriv$y)]
 abline(a = spl.fit$y[which.max(firstDeriv$y)] - (mu * mu.time) , b = mu)
 rm(foo)
-# TODO - how would I calculate the intercept to have a graphic of the line of acceleration?
+# TODO - consider the utility of this approach on another growth model using grofit
 
 # 
 # the AUC - 
@@ -258,6 +258,7 @@ growth.curve.analysis = function(foo) {
   A = max(spl.fit$y)
   AUC = grofit::low.integrate(spl.fit$x, spl.fit$y)
 # Making a nice graph
+# TODO - a legend would be nice
   png(file = paste(paste(foo$sample, foo$well, sep = "-"), ".png", sep = ""), width = 7, height = 7, units = "in", res = 300)
   plot(foo$expt.time/3600000, foo$corrected.abs, ylim = c(0,1),
        xlab = "Time, hrs", ylab = "Absorbance, A.U.")
@@ -272,8 +273,14 @@ growth.curve.analysis = function(foo) {
   abline(a = spl.fit$y[which.max(firstDeriv$y)] - (mu * mu.time) , b = mu)
   dev.off()
 # A list to hold the results, TODO - needs some names, and a more user friendly order
-  list(spl.fit, firstDeriv, mu, mu.time, secondDeriv, lambda, lambda.time, A, AUC)
+  list(mu =  mu, lambda = lambda.time, A = A, AUC = AUC)
 }
 
 gc.analysis = growth.curve.analysis(tecanData.l[[43]])
+gc.analysis
+
 gc.analysis2 = lapply(tecanData.l, growth.curve.analysis)
+str(gc.analysis2)
+tom = lapply(gc.analysis2, ldply)
+str(tom)
+ldply(tom)
