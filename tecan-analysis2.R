@@ -139,10 +139,11 @@ tecanData$corrected.abs = tecanData$abs - tecanData$bkgd
 #           strip.text.x = element_text(size = 12),
 #           strip.text.y = element_text(size = 12))
 # 
-# Growth curve analysis
+# Growth curve analysis - something has gone wrong here - need to fix
 source("growth-curve-analysis-Alg2.R")
+tecanData.l = dlply(tecanData, .(sample))
 gc.analysis = lapply(tecanData.l, growth.curve.analysis)
-gc.analysis.df = ldply(lapply(gc.analysis2, as.data.frame))
+gc.analysis.df = ldply(lapply(gc.analysis, as.data.frame))
 sample.info$sample.well = paste(sample.info$sample, sample.info$well, sep = ".")
 gc.analysis.df = merge(sample.info, gc.analysis.df, by.x = "sample.well", by.y = ".id")
 gc.analysis.dfl = melt(gc.analysis.df, 
