@@ -76,4 +76,8 @@ Y = as.matrix(gc.analysis.df.lite[,6:9])
 Y
 
 summary.aov(fit)
-summary(fit)
+summary(fit, test = "Wilks")
+
+
+fit2 = manova(Y ~ gcn20.genotype * media * arb1.genotype ,data = gc.analysis.df.lite)
+summary(fit2, test = "Wilks")
