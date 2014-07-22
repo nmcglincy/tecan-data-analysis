@@ -5,8 +5,14 @@ gc.analysis.df.lite = gc.analysis.df[,5:length(gc.analysis.df)]
 
 gc.pca = prcomp(~mu + lambda + A + AUC, data = gc.analysis.df.lite, scale = TRUE, center = TRUE)
 gc.pca
+summary(gc.pca)
 
-# capture.output(gc.pca)
+# Adding a report
+pca.results = capture.output(gc.pca, file = "pca-summary.txt")
+cat(pca.results, file = "pca-summary.txt", sep = "\n", append = TRUE)
+pca.results = capture.output(summary(gc.pca))
+cat(pca.results, file = "pca-summary.txt", sep = "\n", append = TRUE)
+
 # summ = summary(gc.pca)$importance
 # summ = as.data.frame(summ)
 
@@ -54,9 +60,21 @@ capture.output(summary(pc1.aov), file = "summary-pc1-anova.txt")
 
 
 cbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+gc.pc
+gc.pc.summ = ddply(gc.pc,
+                   .(sample, strain, media),
+                   summarize,
+                   pc1.mean = mean(PC1),
+                   pc1.se = sd(PC1)/sqrt(length(PC1)))
+
+gc.pc.summ
+
 ggplot(gc.pc, aes(x = sample, y = PC1, colour = media, shape = strain)) +
   geom_point(position = position_jitter(w = 0.15), size = 2.5) +
   scale_colour_manual(values=cbPalette[2:3]) +
+  geom_crossbar(data = gc.pc.summ, aes(x = sample, y = pc1.mean, ymin = pc1.mean-pc1.se, ymax = pc1.mean+pc1.se), 
+                size = 0.4, width = 0.5) +
   theme(panel.border = element_rect(fill = NA, colour = "black"),
         axis.title.x = element_text(vjust = 0, size = 14),
         axis.title.y = element_text(vjust = 0.4, size = 14),
@@ -67,6 +85,7 @@ ggplot(gc.pc, aes(x = sample, y = PC1, colour = media, shape = strain)) +
         legend.title = element_text(size = 12),
         strip.text.x = element_text(size = 12),
         strip.text.y = element_text(size = 12))
+ggsave("pc1-plot.png", dpi = 300)
 
 foo = TukeyHSD(pc1.aov, ordered = TRUE)
 foo
