@@ -6,6 +6,8 @@ growth.curve.analysis = function(foo) {
   firstDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 1)
   mu.time = firstDeriv$x[which.max(firstDeriv$y)]
   mu = firstDeriv$y[which.max(firstDeriv$y)]
+  mu.abs = spl.fit$y[which.max(firstDeriv$y)]
+  norm.growth.rate = mu/mu.abs
 #
 # These functions are left over from my first attempt: using the maximum of 
 # the second derivative of the spline fit to find the point of maximum accelration.
@@ -45,5 +47,5 @@ growth.curve.analysis = function(foo) {
 # 
 # A list to hold the results
 # TODO - include the fit and derivative objects maybe?
-  list(mu =  mu, lambda = lambda, A = A, AUC = AUC)
+  list(mu =  mu, lambda = lambda, A = A, AUC = AUC, norm.growth.rate = norm.growth.rate)
 } 
