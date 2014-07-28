@@ -144,6 +144,65 @@ library(RColorBrewer)
 # Growth curve analysis - something has gone wrong here - need to fix
 source("growth-curve-analysis-Alg2.R")
 tecanData.l = dlply(tecanData, .(sample, well))
+
+# a diversion
+names(tecanData.l)
+foo = tecanData.l[[43]]
+str(foo)
+library(grofit)
+spl.fit = smooth.spline(foo$expt.time/3600000, foo$corrected.abs)
+firstDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 1)
+
+mu.time = firstDeriv$x[which.max(firstDeriv$y)]
+mu = firstDeriv$y[which.max(firstDeriv$y)]
+mu.abs = spl.fit$y[which.max(firstDeriv$y)]
+mu.abs
+
+growth.rate = firstDeriv$y[which.max(firstDeriv$y)]/mu.abs
+growth.rate
+mu
+
+lambda = -(spl.fit$y[which.max(firstDeriv$y)] - (mu * mu.time))/mu
+A = max(spl.fit$y)
+AUC = grofit::low.integrate(spl.fit$x, spl.fit$y)
+
+?exp
+
+plot(foo$expt.time/3600000, foo$corrected.abs,
+     ylim = c(0,1),
+     xlab = "Time, hrs", 
+     ylab = "Absorbance, A.U.")
+lines(spl.fit, col = "red")
+lines(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+points(firstDeriv$x, firstDeriv$y/max(firstDeriv$y), col = "blue")
+abline(v = mu.time, col = "darkgreen", lty = 2)
+abline(h = A, col = "darkgreen", lty = 2)
+abline(a = spl.fit$y[which.max(firstDeriv$y)] - (mu * mu.time) , b = mu)
+abline(v = lambda, col = "orange", lty = 2)
+abline(h = mu.abs, col = "purple")
+abline(a = spl.fit$y[which.max(firstDeriv$y)] - (growth.rate * mu.time) , b = growth.rate, col = "purple", lty = 2)
+
+toy.x = 1:10
+toy.x
+toy.y = exp(toy.x)
+toy.y
+plot(toy.x, toy.y, type = "l")
+points(toy.x, toy.y)
+
+tom = growth.rate * sort(foo$expt.time/3600000)
+tom
+exp.tom = exp(tom)
+exp.tom
+plot(sort(foo$expt.time/3600000), exp.tom)
+
+dick = mu * sort(foo$expt.time/3600000)
+dick
+exp.dick = exp(dick)
+exp.dick
+plot(sort(foo$expt.time/3600000), exp.dick)
+# 
+
+
 gc.analysis = lapply(tecanData.l, growth.curve.analysis)
 gc.analysis.df = ldply(lapply(gc.analysis, as.data.frame))
 sample.info$sample.well = paste(sample.info$sample, sample.info$well, sep = ".")

@@ -4,8 +4,8 @@ growth.curve.analysis = function(foo) {
   require(grofit)
   spl.fit = smooth.spline(foo$expt.time/3600000, foo$corrected.abs)
   firstDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 1)
-  mu = firstDeriv$y[which.max(firstDeriv$y)]
   mu.time = firstDeriv$x[which.max(firstDeriv$y)]
+  mu = firstDeriv$y[which.max(firstDeriv$y)]
 #
 # These functions are left over from my first attempt: using the maximum of 
 # the second derivative of the spline fit to find the point of maximum accelration.
