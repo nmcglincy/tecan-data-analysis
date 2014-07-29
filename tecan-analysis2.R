@@ -289,4 +289,6 @@ manova.results = capture.output(summary.aov(manova.fit))
 cat(manova.results, file = "manova-summary.txt", sep = "\n", append = TRUE)
 # 
 # Attempt at post-hoc analysis 
-summary.aov(manova.fit)
+list.by.msmt = dlply(gc.analysis.dfl, .(variable))
+indv.anovas = lapply(list.by.msmt, function(x) {with(x, aov(measurement ~  media * arb1.genotype * gcn20.genotype))})
+capture.output(lapply(indv.anovas, TukeyHSD), file = "tukeyHSD-summary.txt")

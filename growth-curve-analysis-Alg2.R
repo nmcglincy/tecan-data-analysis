@@ -8,7 +8,11 @@ growth.curve.analysis = function(foo) {
   mu = firstDeriv$y[which.max(firstDeriv$y)]
   mu.abs = spl.fit$y[which.max(firstDeriv$y)]
   norm.growth.rate = mu/mu.abs
-#
+# 
+# norm.growth.rate is a bit noisy because of the noise in the second derivative
+# TODO - find a way to fix it, NI suggests plotting 1st derivative over OD might
+# sharpen it. I had though of some sort of windowing....
+# 
 # These functions are left over from my first attempt: using the maximum of 
 # the second derivative of the spline fit to find the point of maximum accelration.
 # This proved too sensitive to noise in the lag-phase measurements. The values of
