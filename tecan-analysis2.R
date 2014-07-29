@@ -273,3 +273,20 @@ ggplot(tecanData, aes(x = expt.time/3600000, y = corrected.abs, colour = sample)
           legend.text = element_text(size = 12),
           legend.title = element_text(size = 14))
 ggsave("smooth-spline-bySample.png", dpi = 300)
+# 
+# 
+# Statistical analysis
+# 
+# After some playing around and debate with Nick, I favour a three way manova with each genotype as a separate factor
+# followed by 3-way anova for each variable and Tukey's HSD on the individual differences
+response = as.matrix(gc.analysis.df[,10:length(gc.analysis.df)])
+manova.fit = manova(response ~ media * arb1.genotype * gcn20.genotype ,data = gc.analysis.df)
+# 
+# Producing report on manova results, and ensueing anovas
+manova.results = capture.output(summary(manova.fit, test = "Wilks"), file = "manova-summary.txt")
+cat(print("\nIndividual Response Variables\n"), file = "manova-summary.txt", sep = "\n", append = TRUE)
+manova.results = capture.output(summary.aov(manova.fit))
+cat(manova.results, file = "manova-summary.txt", sep = "\n", append = TRUE)
+# 
+# Attempt at post-hoc analysis 
+summary.aov(manova.fit)
