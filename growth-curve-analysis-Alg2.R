@@ -1,6 +1,8 @@
 growth.curve.analysis = function(foo) {
+# 
 # calculating interesting characteristics of the growth curve, fitting a smooth.spline()
 # on an hour time-base.
+# Requires @param expt.time & @param corrected.abs
   require(grofit)
   spl.fit = smooth.spline(foo$expt.time/3600000, foo$corrected.abs)
   firstDeriv = predict(spl.fit, sort(foo$expt.time/3600000), deriv = 1)
