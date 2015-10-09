@@ -5,5 +5,8 @@ generate.sample.info.template = function() {
                               plate.numbers,
                               well = paste(plate.letters, plate.numbers, sep = ""))
   write.csv(plate.template, file = "plate-template.csv", row.names = FALSE)
-  rm(plate.letters, plate.numbers, plate.template)
+  # rm(plate.letters, plate.numbers, plate.template)
 }
+# 
+# uncomment the next line to make it an "executable" using Rscript
+generate.sample.info.template()
